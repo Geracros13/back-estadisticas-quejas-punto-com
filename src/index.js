@@ -57,7 +57,7 @@ app.get('/region/:id', (req, res) => {
 
 })
 
-//Ruta de los municipios
+//Ruta de los municipio
 app.get('/municipio/:id', (req, res) => {
 
     const idMunicipio = req.params.id;
@@ -76,6 +76,68 @@ app.get('/municipio/:id', (req, res) => {
     order by idSucursal`;
 
     db.query(selectMunicipio, (error, resultado)=>{
+        if (error) {
+            throw error
+        }else{
+
+            res.json(resultado)
+        }
+    })
+
+
+})
+
+//Ruta de los departamento
+app.get('/departamento/:id', (req, res) => {
+
+    const idDepartamento= req.params.id;
+
+    const selectDepartamento = `Select 
+    c.comercioNombre,
+    m.municipioNombre,
+    s.sucursalDireccion,
+    q.quejaFecha,
+    q.quejaDescripcion
+    from Queja as q 
+    inner join Sucursal as s using (idSucursal)
+    join Comercio as c using(idComercio)
+    join Municipio as m using(idMunicipio)
+    join Departamento as d using(idDepto)
+    where idDepto = ${idDepartamento}
+    order by idSucursal`;
+
+    db.query(selectDepartamento, (error, resultado)=>{
+        if (error) {
+            throw error
+        }else{
+
+            res.json(resultado)
+        }
+    })
+
+
+})
+
+//Ruta de comercios
+app.get('/comercio/:id', (req, res) => {
+
+    const idComercio= req.params.id;
+
+    const selectComercio = `Select 
+    d.deptoNombre,
+    m.municipioNombre,
+    s.sucursalDireccion,
+    q.quejaFecha,
+    q.quejaDescripcion
+    from Queja as q 
+    inner join Sucursal as s using (idSucursal)
+    join Comercio as c using(idComercio)
+    join Municipio as m using(idMunicipio)
+    join Departamento as d using(idDepto)
+    where idComercio = ${idComercio}
+    order by idSucursal`;
+
+    db.query(selectComercio, (error, resultado)=>{
         if (error) {
             throw error
         }else{
