@@ -25,10 +25,9 @@ const db = mysql.createPool({
     database: "freesoftware",
 });
 
-//Rutas de las regiones
+//Ruta de las regiones
 app.get('/region/:id', (req, res) => {
 
-    // const idSucursal = 1;
     const idSucursal = req.params.id;
 
     const selectRegion = `Select 
@@ -47,6 +46,36 @@ app.get('/region/:id', (req, res) => {
     order by idSucursal`;
 
     db.query(selectRegion, (error, resultado)=>{
+        if (error) {
+            throw error
+        }else{
+
+            res.json(resultado)
+        }
+    })
+
+
+})
+
+//Ruta de los municipios
+app.get('/municipio/:id', (req, res) => {
+
+    const idMunicipio = req.params.id;
+
+    const selectMunicipio = `Select 
+    c.comercioNombre,
+    s.sucursalDireccion,
+    q.quejaFecha,
+    q.quejaDescripcion
+    from Queja as q 
+    inner join Sucursal as s using (idSucursal)
+    join Comercio as c using(idComercio)
+    join Municipio as m using(idMunicipio)
+    join Departamento as d using(idDepto)
+    where idMunicipio = ${idMunicipio}
+    order by idSucursal`;
+
+    db.query(selectMunicipio, (error, resultado)=>{
         if (error) {
             throw error
         }else{
