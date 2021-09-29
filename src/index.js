@@ -58,22 +58,19 @@ app.get('/region/:id', (req, res) => {
 })
 
 //Ruta de los municipio
-app.get('/municipio/:id', (req, res) => {
+app.get('/municipio/', (req, res) => {
 
-    const idMunicipio = req.params.id;
 
-    const selectMunicipio = `Select 
-    c.comercioNombre,
-    s.sucursalDireccion,
-    q.quejaFecha,
-    q.quejaDescripcion
-    from Queja as q 
-    inner join Sucursal as s using (idSucursal)
-    join Comercio as c using(idComercio)
-    join Municipio as m using(idMunicipio)
-    join Departamento as d using(idDepto)
-    where idMunicipio = ${idMunicipio}
-    order by idSucursal`;
+    const selectMunicipio = `SELECT 
+    m.idMunicipio,
+    m.municipioNombre,
+    COUNT(q.idQueja) 
+    AS Total
+    FROM Municipio AS m
+    left JOIN Sucursal AS s USING(idMunicipio)
+    left join Queja as q using (idSucursal)
+    GROUP BY m.idMunicipio
+    having Total>0;`;
 
     db.query(selectMunicipio, (error, resultado)=>{
         if (error) {
